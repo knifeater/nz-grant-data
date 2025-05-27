@@ -1,19 +1,14 @@
 [
-    {
-      "name": "Youth Development Fund",
-      "organization": "Ministry of Youth",
-      "purpose": "Support programs for youth leadership",
-      "open_date": "2025-06-01",
-      "close_date": "2025-07-15",
-      "status": "Open"
-    },
-    {
-      "name": "Community Garden Grant",
-      "organization": "Hamilton City Council",
-      "purpose": "Urban gardening projects",
-      "open_date": "2025-05-01",
-      "close_date": "2025-06-01",
-      "status": "Closed"
-    }
-  ]
-  
+  {
+    "name": "Grant Name 1",
+    "purpose": "What the grant is for",
+    "open_date": "YYYY-MM-DD",
+    "close_date": "YYYY-MM-DD"
+  },
+  {
+    "name": "Grant Name 2",
+    "purpose": "What the grant is for",
+    "open_date": "YYYY-MM-DD",
+    "close_date": "YYYY-MM-DD"
+  }
+]
