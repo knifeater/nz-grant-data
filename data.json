@@ -1,14 +1,14 @@
 [
   {
-    "name": "Grant Name 1",
-    "purpose": "What the grant is for",
-    "open_date": "YYYY-MM-DD",
-    "close_date": "YYYY-MM-DD"
+    "name": "Grant 1",
+    "purpose": "Help small businesses",
+    "open_date": "2025-01-01",
+    "close_date": "2025-03-31"
   },
   {
-    "name": "Grant Name 2",
-    "purpose": "What the grant is for",
-    "open_date": "YYYY-MM-DD",
-    "close_date": "YYYY-MM-DD"
+    "name": "Grant 2",
+    "purpose": "Education support",
+    "open_date": "2025-02-15",
+    "close_date": "2025-04-30"
   }
 ]
