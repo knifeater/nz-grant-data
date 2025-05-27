@@ -1,73 +1,45 @@
-import requests
-from bs4 import BeautifulSoup
 import json
-import datetime
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
-URL = "https://www.business.govt.nz/funding-grants/"
-OUTPUT_FILE = "data.json"
+# Setup headless Chrome browser
+options = Options()
+options.add_argument("--headless")
+driver = webdriver.Chrome(options=options)
 
-def scrape_grants():
-    response = requests.get(URL)
-    soup = BeautifulSoup(response.text, "html.parser")
+# Navigate to the grants page
+driver.get("https://www.perpetualguardian.co.nz/")
 
-    grants = []
+time.sleep(3)  # Wait for page to load (can increase if necessary)
 
-    # Look for each grant in the card listing
-    cards = soup.find_all("div", class_="card")
+# This part assumes the grants are listed on the homepage or in a predictable section.
+# You may need to adjust this if the page structure changes.
+grants = []
 
-    for card in cards:
-        try:
-            title = card.find("h2").get_text(strip=True)
-            description = card.find("p").get_text(strip=True)
-            link = card.find("a")["href"]
+try:
+    # Example: look for elements with grant data
+    links = driver.find_elements(By.TAG_NAME, "a")
+    for link in links:
+        text = link.text.lower()
+        if "grant" in text or "foundation" in text:
+            href = link.get_attribute("href")
+            if href:
+                grants.append({
+                    "name": link.text.strip(),
+                    "purpose": "See website for details",
+                    "open_date": "TBD",
+                    "close_date": "TBD"
+                })
+except Exception as e:
+    print("Error while scraping:", e)
 
-            # Visit the individual grant page to extract date info
-            if link.startswith("/"):
-                link = "https://www.business.govt.nz" + link
+# Close the browser
+driver.quit()
 
-            grant_page = requests.get(link)
-            sub_soup = BeautifulSoup(grant_page.text, "html.parser")
+# Save to data.json
+with open("data.json", "w", encoding="utf-8") as f:
+    json.dump(grants, f, indent=2)
 
-            # This is a best guess; adjust for different grant sites
-            open_date = "2025-01-01"
-            close_date = "2025-12-31"
-
-            date_tags = sub_soup.find_all("p")
-            for tag in date_tags:
-                text = tag.get_text().lower()
-                if "open" in text:
-                    open_date = extract_date(text)
-                if "close" in text:
-                    close_date = extract_date(text)
-
-            grants.append({
-                "name": title,
-                "purpose": description,
-                "open_date": open_date,
-                "close_date": close_date
-            })
-
-        except Exception as e:
-            print(f"Error scraping card: {e}")
-            continue
-
-    # Save to data.json
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(grants, f, indent=4)
-
-    print(f"✅ Saved {len(grants)} grants to {OUTPUT_FILE}")
-
-def extract_date(text):
-    # Basic fallback parser for "1 June 2025" etc.
-    for fmt in ("%d %B %Y", "%d %b %Y"):
-        try:
-            parts = text.split()
-            for i in range(len(parts) - 2):
-                date_str = " ".join(parts[i:i+3])
-                return datetime.datetime.strptime(date_str, fmt).strftime("%Y-%m-%d")
-        except:
-            continue
-    return "2025-01-01"
-
-if __name__ == "__main__":
-    scrape_grants()
+print(f"Scraped {len(grants)} grants and saved to data.json")
